@@ -1,0 +1,23 @@
+{
+  "name": "registration-api",
+  "version": "1.0.0",
+  "description": "full stack registration form",
+  "main": "server.js",
+  "type": "module",
+  "engines": {
+    "node": ">=18.16.0"
+  },
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
+  "author": "Joshua",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mysql2": "^3.6.3"
+  },
+  "devDependencies": {
+    "prisma": "^5.5.2"
+  }
+}
