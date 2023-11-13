@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcrypt'
 import { userSchema } from '../schema/userSchema.js';
+import jwt from 'jsonwebtoken';
 
 const prisma = new PrismaClient()
 
@@ -14,6 +15,8 @@ export const Register = async (req, res) => {
             })
         }
 
+        //Validate req.body
+
         try {
             userSchema.parse({ first_name, last_name, email, password });
         } catch (error) {
@@ -22,6 +25,7 @@ export const Register = async (req, res) => {
             });
         }
 
+        //check if user exist in the database
         const userExist = await prisma.user.findMany({
             where: {
                 email
@@ -34,9 +38,13 @@ export const Register = async (req, res) => {
             })
         }
 
+
+        //encrypt the password
         const salt = await bcrypt.genSalt(10)
 
         const hashedPassword = await bcrypt.hash(password, salt)
+
+        //save a user to the database
 
         const newUser = await prisma.user.create({
             data: {
@@ -51,4 +59,60 @@ export const Register = async (req, res) => {
         console.error("Error creating user:", error);
         res.status(500).send("Error creating user");
     }
-} 
+}
+
+
+export const Login = async (req, res) => {
+
+    const { email, password } = req.body
+
+    try {
+        //check if user exist in the database
+        const user = await prisma.user.findUnique({
+            where: {
+                email
+            }
+        })
+
+        //errror message
+
+        if (!user) {
+            return res.status(404).json({ message: "User does not exist" });
+        }
+
+        //check if password is correct
+
+        const validPassword = await bcrypt.compare(password, user.password)
+
+        if (!validPassword) {
+            return res.status(400).json({ message: "Invalid credentials" });
+        }
+
+        const payload = {
+            id: user.id,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            // password: user.password,
+            email: user.email
+        }
+
+        const token = jwt.sign(payload, process.env.JWT_SECRET, {
+            expiresIn: "1d",
+        });
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            // secure: true
+        })
+
+        res.status(200).json({
+            message: "Logged in successfully",
+            token,
+        });
+
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ meesage: "Internal server error" })
+    }
+}
+
