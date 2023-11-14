@@ -1,40 +1,62 @@
 import { Link } from 'react-router-dom'
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { SignupSchema } from '../schema/authSchema'
 
 const Signup = () => {
+
+    const { register, handleSubmit, formState: { errors } } = useForm({ resolver: yupResolver(SignupSchema) })
+
+    const onSubmitHandler = (data) => {
+        console.log(data)
+    }
+
     return (
         <div className=' bg-gray-500 '>
             <div className="flex flex-col items-center justify-center h-screen dark">
                 <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-md p-6">
                     <h2 className="text-2xl font-bold text-gray-200 mb-4">Sign Up</h2>
-                    <form className="flex flex-col">
+                    <form
+                        onSubmit={handleSubmit(onSubmitHandler)}
+                        className="flex flex-col">
                         <div className="flex space-x-4 mb-4">
                             <input
                                 placeholder="First Name"
                                 className="bg-gray-700 text-gray-200 border-0 rounded-md p-2 w-1/2 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
                                 type="text"
+                                {...register("firstName")}
                             />
+                            <p >{errors.firstName?.message}</p>
                             <input
                                 placeholder="Last Name"
                                 className="bg-gray-700 text-gray-200 border-0 rounded-md p-2 w-1/2 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
                                 type="text"
+                                {...register("lastName")}
                             />
+                            <p>{errors.lastName?.message}</p>
                         </div>
                         <input
                             placeholder="Email"
                             className="bg-gray-700 text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
                             type="email"
+                            {...register("email")}
                         />
+                        <p>{errors.email?.message}</p>
 
                         <input
                             placeholder="Password"
                             className="bg-gray-700 text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
                             type="password"
+                            {...register("password")}
                         />
+                        <p>{errors.password?.message}</p>
                         <input
                             placeholder="Confirm Password"
                             className="bg-gray-700 text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
                             type="password"
+                            {...register("confirmPassword")}
                         />
+                        <p>{errors.confirmPassword?.message}</p>
 
                         <p className="text-white mt-4">
                             Already have an account?
@@ -57,3 +79,6 @@ const Signup = () => {
 }
 
 export default Signup
+
+
+
