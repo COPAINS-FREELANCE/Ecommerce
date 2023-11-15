@@ -2,13 +2,19 @@ import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SignupSchema } from '../schema/authSchema'
+import { SendToSignup } from '../actions/AuthActions'
 
 const Signup = () => {
 
     const { register, handleSubmit, formState: { errors } } = useForm({ resolver: yupResolver(SignupSchema) })
 
-    const onSubmitHandler = (data) => {
-        console.log(data)
+    const onSubmitHandler = async (data) => {
+        try {
+
+            const dataFromServer = await SendToSignup(data)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
@@ -24,16 +30,16 @@ const Signup = () => {
                                 placeholder="First Name"
                                 className="bg-gray-700 text-gray-200 border-0 rounded-md p-2 w-1/2 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
                                 type="text"
-                                {...register("firstName")}
+                                {...register("first_name")}
                             />
-                            <p >{errors.firstName?.message}</p>
+                            <p >{errors.first_name?.message}</p>
                             <input
                                 placeholder="Last Name"
                                 className="bg-gray-700 text-gray-200 border-0 rounded-md p-2 w-1/2 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
                                 type="text"
-                                {...register("lastName")}
+                                {...register("last_name")}
                             />
-                            <p>{errors.lastName?.message}</p>
+                            <p>{errors.last_name?.message}</p>
                         </div>
                         <input
                             placeholder="Email"

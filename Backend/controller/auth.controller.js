@@ -9,6 +9,8 @@ export const Register = async (req, res) => {
     try {
         const { first_name, last_name, email, password } = req.body;
 
+        // console.log(first_name, last_name, email, password)
+
         if (!first_name || !last_name || !email) {
             return res.status(400).json({
                 message: "Please fill all fields"
@@ -54,7 +56,7 @@ export const Register = async (req, res) => {
                 password: hashedPassword
             }
         });
-        res.json(newUser);
+        res.status(200).json({ message: "User created successfuly" });
     } catch (error) {
         console.error("Error creating user:", error);
         res.status(500).send("Error creating user");
