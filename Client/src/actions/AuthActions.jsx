@@ -28,3 +28,23 @@ export const SendToSignup = async (data) => {
     }
 
 }
+
+export const LoginUser = async (user) => {
+
+    try {
+        const res = await axios.post(`${apiDomain}/login`, user, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        console.log(res)
+
+        if (res.status !== 200) {
+            throw new error("Network response was not ok")
+        }
+        return res.data
+
+    } catch (err) {
+        console.log(err)
+    }
+}
